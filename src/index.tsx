@@ -9,7 +9,7 @@ const root = createRoot(container);
 const App = () => {
 
   return (
-    <div>Init</div>
+    <MainPage />
   );
 };
 
