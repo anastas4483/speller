@@ -1,7 +1,7 @@
-import { Requests } from '@/api/requests';
 import { AppTextarea } from '@/components/common/app-textarea/AppTextarea';
 import { SpellerTextErrors, SpellerTextErrorsProps } from '@/components/speller/components/speller-text-errors/SpellerTextErrors';
-import React, { useCallback, useState } from 'react';
+import { WorkerService } from '@/utils/worker-service';
+import React, { useCallback, useEffect, useState } from 'react';
 import './speller.scss';
 
 export const Speller = () => {
@@ -9,11 +9,17 @@ export const Speller = () => {
   const [value, setValue] = useState('');
   const [errors, setErrors] = useState<SpellerTextErrorsProps['errors']>([]);
 
+  const onMessage = (msg: SpellerTextErrorsProps['errors']) => {
+    setErrors(msg);
+  };
+
+  useEffect(() => {
+    WorkerService.setOnMessage(onMessage);
+    return () => WorkerService.terminate();
+  }, []);
+
   const checkText = (text: string) => {
-    Requests.checkText(text)
-      .then((res) => {
-        setErrors(res.data);
-      });
+    WorkerService.postMessage(text);
   };
 
   const onChange = useCallback((value: string) => {
