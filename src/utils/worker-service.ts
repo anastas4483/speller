@@ -1,6 +1,8 @@
+import CheckTextWorker from '@/workers/check-text-worker?worker';
+
 export class WorkerService {
 
-  private static checkTextWorker = new Worker('/src/workers/check-text-worker.js', { type: 'module' });
+  private static checkTextWorker = new CheckTextWorker();
 
   private constructor() { }
 
